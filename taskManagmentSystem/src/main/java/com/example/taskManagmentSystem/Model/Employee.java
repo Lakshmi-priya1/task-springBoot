@@ -3,12 +3,15 @@ package com.example.taskManagmentSystem.Model;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -28,17 +31,18 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String department;
-
     private String status;
     
     private String phoneNumber;
     private String password;
 
-    @OneToMany(mappedBy = "employeeId", cascade = CascadeType.ALL,orphanRemoval = true)
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Task> tasks;
     @ManyToOne
     @JoinColumn(name = "org_id")
-    
     private Organization organization;
+    @JsonIgnore
+    @ManyToMany(mappedBy = "employees")
+    private List<Project> projects;
 
 }

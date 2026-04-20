@@ -15,5 +15,8 @@ public class TaskResponse {
     private LocalDateTime dueDate;
 
     private Long employeeId;
+    private Long projectId;
+    private String firstName;
+    private String projectName;
     
 }

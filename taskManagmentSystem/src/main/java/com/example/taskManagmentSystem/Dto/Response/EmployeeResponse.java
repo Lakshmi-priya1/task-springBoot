@@ -8,8 +8,8 @@ public class EmployeeResponse {
     private Long employeeId;
     private String username;
     private String email;
-    private String FirstName;
-    private String LastName;
+    private String firstName;
+    private String lastName;
     private String department;
 
     private String status;

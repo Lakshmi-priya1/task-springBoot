@@ -13,7 +13,6 @@ public final  class TaskMapper {
         task.setStatus(dto.getStatus());
         task.setPriority(dto.getPriority());
         task.setDueDate(dto.getDueDate());
-        task.setEmployeeId(null); // Set employeeId to null, it will be handled in the service layer
         return task;
     }
 
@@ -25,7 +24,18 @@ public final  class TaskMapper {
         dto.setStatus(task.getStatus());
         dto.setPriority(task.getPriority());
         dto.setDueDate(task.getDueDate());
-        dto.setEmployeeId(task.getEmployeeId() != null ? task.getEmployeeId().getEmployeeId() : null);  
+        dto.setEmployeeId(
+            task.getEmployee() != null
+                ? task.getEmployee().getEmployeeId()
+                : null
+        );
+        
+        dto.setProjectId(
+            task.getProject() != null
+                ? task.getProject().getProjectId()
+                : null
+        );
+        
         return dto;
     }
 }

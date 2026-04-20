@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.example.taskManagmentSystem.Dto.Request.TaskRequest;
 import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
 import com.example.taskManagmentSystem.Model.Employee;
+import com.example.taskManagmentSystem.Model.Project;
 import com.example.taskManagmentSystem.Model.Task;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
+import com.example.taskManagmentSystem.Repository.ProjectRepo;
 import com.example.taskManagmentSystem.Repository.TaskRepo;
 import com.example.taskManagmentSystem.Service.TaskService;
 import com.example.taskManagmentSystem.Util.TaskMapper;
@@ -18,18 +20,27 @@ import com.example.taskManagmentSystem.Util.TaskMapper;
 public class TaskServiceImpl implements TaskService {
     private final TaskRepo taskRepo;
     private final EmployeeRepo employeeRepo;
-    public TaskServiceImpl(TaskRepo taskRepo, EmployeeRepo employeeRepo) {
+    private final ProjectRepo projectRepo;
+    public TaskServiceImpl(TaskRepo taskRepo, EmployeeRepo employeeRepo, ProjectRepo projectRepo) {
         this.taskRepo = taskRepo;
         this.employeeRepo = employeeRepo;
+        this.projectRepo = projectRepo;
     }
     @Override
     public TaskResponse createTask(TaskRequest request) {
     Task task = TaskMapper.mapToEntity(request);
      if (request.getEmployeeId() != null) {
-        Employee employeeId = employeeRepo.findById(request.getEmployeeId())
+        Employee employee = employeeRepo.findById(request.getEmployeeId())
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        task.setEmployeeId(employeeId);
+        task.setEmployee(employee);
+    }
+
+    if (request.getProjectId() != null) {
+        Project project = projectRepo.findById(request.getProjectId())
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+
+        task.setProject(project);
     }
     Task savedTask = taskRepo.save(task);
 
@@ -59,15 +70,21 @@ public class TaskServiceImpl implements TaskService {
         task.setPriority(request.getPriority());
         task.setDueDate(request.getDueDate());
         if (request.getEmployeeId() != null) {
-            Employee employeeId = employeeRepo.findById(request.getEmployeeId())
+            Employee employee = employeeRepo.findById(request.getEmployeeId())
                     .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-            task.setEmployeeId(employeeId);
+            task.setEmployee(employee);
+        }
+        if (request.getProjectId() != null) {
+            Project project = projectRepo.findById(request.getProjectId())
+                    .orElseThrow(() -> new RuntimeException("Project not found"));
+
+            task.setProject(project);
         }
         
         return TaskMapper.mapToDTO(taskRepo.save(task));
     } 
-    return null;
+    return null;  
 }
      @Override
     public void deleteTask(Long id) {

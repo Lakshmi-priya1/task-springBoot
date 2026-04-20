@@ -14,4 +14,7 @@ public class TaskRequest {
     private LocalDateTime dueDate;
     
     private Long employeeId;
+
+    private Long projectId;
+    
 }

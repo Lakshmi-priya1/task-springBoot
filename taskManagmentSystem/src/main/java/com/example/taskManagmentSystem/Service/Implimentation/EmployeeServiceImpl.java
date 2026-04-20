@@ -79,7 +79,6 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
 public Page<EmployeeResponse> searchFilterEmployees(String keyword, String department, int page, int size) {
 
-   
     if (keyword != null && keyword.trim().isEmpty()) {
         keyword = null;
     }
