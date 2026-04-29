@@ -3,10 +3,12 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.taskManagmentSystem.Dto.Request.EmployeeRequest;
 import com.example.taskManagmentSystem.Dto.Response.EmployeeResponse;
+import com.example.taskManagmentSystem.Exception.ResourceNotFoundException;
 import com.example.taskManagmentSystem.Model.Employee;
 import com.example.taskManagmentSystem.Model.Organization;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
@@ -49,7 +51,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     @Override
     public EmployeeResponse getEmployeeById(Long employeeId) {
-        return EmployeeMapper.mapToDTO(employeeRepo.findById(employeeId).orElse(null));
+        Employee employee = employeeRepo.findById(employeeId)
+        .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+        return EmployeeMapper.mapToDTO(employee);
     }
     @Override
     public EmployeeResponse updateEmployee(Long employeeId, EmployeeRequest request) {
@@ -74,10 +78,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
     @Override
     public void deleteEmployee(Long employeeId) {
-        employeeRepo.deleteById(employeeId);    
+        if (!employeeRepo.existsById(employeeId)) {
+    throw new ResourceNotFoundException("Employee", "id", employeeId);
+}
+employeeRepo.deleteById(employeeId);   
     }
     @Override
-public Page<EmployeeResponse> searchFilterEmployees(String keyword, String department, int page, int size) {
+public Page<EmployeeResponse> searchFilterEmployees(String keyword, String department, int page, int size, String sortBy, String direction) {
 
     if (keyword != null && keyword.trim().isEmpty()) {
         keyword = null;
@@ -86,8 +93,11 @@ public Page<EmployeeResponse> searchFilterEmployees(String keyword, String depar
     if (department != null && department.trim().isEmpty()) {
         department = null;
     }
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
 
-    PageRequest pageable = PageRequest.of(page, size);
+    PageRequest pageable = PageRequest.of(page, size, sort);
 
     Page<Employee> employeePage = employeeRepo.searchAndFilter(keyword, department, pageable);
 

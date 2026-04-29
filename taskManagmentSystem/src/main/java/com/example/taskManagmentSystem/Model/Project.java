@@ -1,12 +1,15 @@
 package com.example.taskManagmentSystem.Model;
 
 import java.time.LocalDateTime;
-import java.util.List;
+ import java.util.List;
 
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -26,12 +29,12 @@ import lombok.NoArgsConstructor;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    
     private Long projectId;
-
     private String projectName;
-
     private String description;
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
@@ -46,5 +49,7 @@ public class Project {
          inverseJoinColumns = @JoinColumn(name = "employee_id")
         )
     private List<Employee> employees;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Milestone> milestones;
     
 }

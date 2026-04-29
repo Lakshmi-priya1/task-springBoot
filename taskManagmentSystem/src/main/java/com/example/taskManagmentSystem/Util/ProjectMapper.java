@@ -48,6 +48,22 @@ public final class ProjectMapper {
                .toList()
     );
 }
+
+    
+if (project.getMilestones() != null && !project.getMilestones().isEmpty()) {
+
+    dto.setMilestoneIds(
+        project.getMilestones().stream()
+               .map(milestone -> milestone.getMilestoneId())
+               .toList()
+    );
+
+    dto.setMilestoneNames(
+        project.getMilestones().stream()
+               .map(milestone -> milestone.getMilestoneName())
+               .toList()
+    );
+}
        return dto;
     }
 }

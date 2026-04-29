@@ -15,6 +15,7 @@ public interface EmployeeRepo extends JpaRepository<Employee, Long> {
                LOWER(e.firstName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR
                LOWER(e.email) LIKE LOWER(CONCAT('%', :keyword, '%')))
         AND (:department IS NULL OR e.department = :department)
+        
     """)
     Page<Employee> searchAndFilter(String keyword, String department, Pageable pageable);
     

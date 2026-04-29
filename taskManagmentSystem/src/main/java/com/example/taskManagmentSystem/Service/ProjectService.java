@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 
 import com.example.taskManagmentSystem.Dto.Request.ProjectRequest;
 import com.example.taskManagmentSystem.Dto.Response.ProjectResponse;
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
 
 public interface ProjectService {
     List<ProjectResponse> getAllProjects();
@@ -18,5 +19,5 @@ public interface ProjectService {
     void removeEmployeeFromProject(Long projectId, Long employeeId);
     void assignTaskToProject(Long projectId, Long taskId);
     void removeTaskFromProject(Long projectId, Long taskId);
-    Page<ProjectResponse> searchAndFilterProjects(String keyword, String status, int page, int size); 
+    Page<ProjectResponse> searchAndFilterProjects(String keyword, ProjectStatus status, int page, int size, String sortBy, String direction); 
 }

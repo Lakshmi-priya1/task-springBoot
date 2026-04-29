@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import com.example.taskManagmentSystem.Dto.Request.TaskRequest;
 import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
+import com.example.taskManagmentSystem.Payload.TaskStatus;
 
 
 public  interface  TaskService {
@@ -18,7 +19,14 @@ public  interface  TaskService {
 
     void deleteTask(Long id);
 
-    Page<TaskResponse> searchFilterTasks(String keyword, String status, int page, int size);
+    Page<TaskResponse> searchFilterTasks(
+        String keyword,
+        TaskStatus status,
+        int page,
+        int size,
+        String sortBy,
+        String direction
+    );
 
     
 }

@@ -1,12 +1,11 @@
 package com.example.taskManagmentSystem.Model;
 
-
+import java.time.LocalDateTime;
 import java.util.List;
 
-import com.example.taskManagmentSystem.Payload.EmployeeStatus;
+import com.example.taskManagmentSystem.Payload.MilestoneStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,39 +13,32 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
-public class Employee {
+@Data
+@Entity
+@Table(name = "milestones")
+public class Milestone {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long employeeId;
-    private String username;
-    private String email;
-    private String firstName;
-    private String lastName;
-    private String department;
+    private Long milestoneId;
+    private String milestoneName;
+    private String description;
     @Enumerated(EnumType.STRING)
-    private EmployeeStatus status;
-    private String phoneNumber;
-    private String password;
+    private MilestoneStatus status; 
+    private LocalDateTime dueDate;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Task> tasks;
     @ManyToOne
-    @JoinColumn(name = "org_id")
-    private Organization organization;
+    @JoinColumn(name = "project_id")
+    private Project project;
     @JsonIgnore
-    @ManyToMany(mappedBy = "employees")
-    private List<Project> projects;
-
+    @OneToMany(mappedBy = "milestone", cascade = jakarta.persistence.CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks; 
 }

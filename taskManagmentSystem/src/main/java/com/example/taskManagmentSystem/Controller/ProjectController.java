@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.taskManagmentSystem.Dto.Request.ProjectRequest;
 import com.example.taskManagmentSystem.Dto.Response.ProjectResponse;
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
 import com.example.taskManagmentSystem.Service.ProjectService;
 
 @RestController
@@ -29,7 +30,7 @@ public class ProjectController {
     public List<ProjectResponse> getAllProjects() {
         return projectService.getAllProjects();
     }
-    @GetMapping("/all/{projectId}")
+    @GetMapping("/{projectId}")
     public ProjectResponse getProjectById(@PathVariable Long projectId) {
         return projectService.getProjectById(projectId);
     } 
@@ -82,12 +83,14 @@ public String removeEmployeeFromProject(
     @GetMapping
     public Page<ProjectResponse> searchAndFilterProjects(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) ProjectStatus status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
 
     ) {
         return
-         projectService.searchAndFilterProjects(keyword, status , page, size);
+         projectService.searchAndFilterProjects(keyword, status , page, size, sortBy, direction);
     }
 }

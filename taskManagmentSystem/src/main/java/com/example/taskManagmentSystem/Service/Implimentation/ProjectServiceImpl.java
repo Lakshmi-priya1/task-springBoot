@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.taskManagmentSystem.Dto.Request.ProjectRequest;
@@ -11,6 +12,7 @@ import com.example.taskManagmentSystem.Dto.Response.ProjectResponse;
 import com.example.taskManagmentSystem.Model.Employee;
 import com.example.taskManagmentSystem.Model.Project;
 import com.example.taskManagmentSystem.Model.Task;
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
 import com.example.taskManagmentSystem.Repository.ProjectRepo;
 import com.example.taskManagmentSystem.Repository.TaskRepo;
@@ -122,14 +124,17 @@ public void removeTaskFromProject(Long projectId, Long taskId) {
     taskRepo.save(task);
 }
     @Override
-    public Page<ProjectResponse> searchAndFilterProjects(String keyword, String status, int page, int size) {
-        if (keyword == null || keyword.isEmpty()) {
-            keyword = null; 
-        }
-        if (status == null || status.isEmpty()) {
-            status = null;
-              }
-        PageRequest pageable = PageRequest.of(page, size);
+    public Page<ProjectResponse> searchAndFilterProjects(String keyword, ProjectStatus status, int page, int size, String sortBy, String direction) {
+       
+    if (keyword != null && keyword.trim().isEmpty()) {
+        keyword = null;
+    }
+
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
+
+    PageRequest pageable = PageRequest.of(page, size, sort);
         Page <Project> projectPage = projectRepo.searchAndFilter(keyword, status, pageable);
         return projectPage.map(ProjectMapper::mapToDto);
     }

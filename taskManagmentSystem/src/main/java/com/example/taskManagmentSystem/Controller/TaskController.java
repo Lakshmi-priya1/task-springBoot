@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.taskManagmentSystem.Dto.Request.TaskRequest;
 import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
+import com.example.taskManagmentSystem.Payload.TaskStatus;
 import com.example.taskManagmentSystem.Service.TaskService;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -30,7 +31,7 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
     }
@@ -49,10 +50,12 @@ public class TaskController {
     @GetMapping
     public Page<TaskResponse> getTasks(
             @RequestParam(required = false) String keyword,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) TaskStatus status,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size
-    ) {
-        return taskService.searchFilterTasks(keyword, status, page, size);
-    }
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+) {
+    return taskService.searchFilterTasks(keyword, status, page, size, sortBy, direction);
+}
 }

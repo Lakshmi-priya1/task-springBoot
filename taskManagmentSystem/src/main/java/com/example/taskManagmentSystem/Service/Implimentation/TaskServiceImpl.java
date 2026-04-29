@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.taskManagmentSystem.Dto.Request.TaskRequest;
@@ -11,6 +12,7 @@ import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
 import com.example.taskManagmentSystem.Model.Employee;
 import com.example.taskManagmentSystem.Model.Project;
 import com.example.taskManagmentSystem.Model.Task;
+import com.example.taskManagmentSystem.Payload.TaskStatus;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
 import com.example.taskManagmentSystem.Repository.ProjectRepo;
 import com.example.taskManagmentSystem.Repository.TaskRepo;
@@ -67,7 +69,9 @@ public class TaskServiceImpl implements TaskService {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setStatus(request.getStatus());
+
         task.setPriority(request.getPriority());
+
         task.setDueDate(request.getDueDate());
         if (request.getEmployeeId() != null) {
             Employee employee = employeeRepo.findById(request.getEmployeeId())
@@ -92,16 +96,16 @@ public class TaskServiceImpl implements TaskService {
     }
    @Override
 
-   public Page<TaskResponse> searchFilterTasks(String keyword, String status, int page, int size) {
+   public Page<TaskResponse> searchFilterTasks(String keyword,TaskStatus status,int page,int size,String sortBy,String direction) {
     if (keyword != null && keyword.trim().isEmpty()) {
         keyword = null;
     }
 
-    if (status != null && status.trim().isEmpty()) {
-        status = null;
-    }
+    Sort sort = direction.equalsIgnoreCase("desc")
+            ? Sort.by(sortBy).descending()
+            : Sort.by(sortBy).ascending();
 
-    PageRequest pageable = PageRequest.of(page, size);
+    PageRequest pageable = PageRequest.of(page, size, sort);
 
     Page<Task> taskPage = taskRepo.searchAndFilter(keyword, status, pageable);
 

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.example.taskManagmentSystem.Model.Project;
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
 
 @Repository
 public interface ProjectRepo extends JpaRepository<Project, Long> {
@@ -22,5 +23,5 @@ public interface ProjectRepo extends JpaRepository<Project, Long> {
 )
 
 """)
-    Page<Project> searchAndFilter(String keyword, String status, Pageable pageable);
+    Page<Project> searchAndFilter(String keyword, ProjectStatus status, Pageable pageable);
 }

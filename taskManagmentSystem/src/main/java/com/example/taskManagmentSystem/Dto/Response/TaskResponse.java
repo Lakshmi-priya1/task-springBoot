@@ -2,6 +2,9 @@ package com.example.taskManagmentSystem.Dto.Response;
 
 import java.time.LocalDateTime;
 
+import com.example.taskManagmentSystem.Payload.TaskPriority;
+import com.example.taskManagmentSystem.Payload.TaskStatus;
+
 import lombok.Data;
 
 
@@ -10,8 +13,8 @@ public class TaskResponse {
     private Long id;
     private String title;
     private String description;
-    private String status;
-    private String priority;
+    private TaskStatus status;
+    private TaskPriority priority;
     private LocalDateTime dueDate;
 
     private Long employeeId;

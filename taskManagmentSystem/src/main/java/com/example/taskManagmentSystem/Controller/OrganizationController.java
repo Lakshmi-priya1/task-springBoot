@@ -11,13 +11,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
-
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-
-@CrossOrigin(origins = "http://localhost:5173")
 
 @RestController
 @RequestMapping("/organizations")
@@ -34,7 +30,7 @@ public class OrganizationController {
     public List<OrganizationResponse> getAllOrganizations() {
         return organizationService.getAllOrganizations();
     }
-    @GetMapping("/all/{orgId}")
+    @GetMapping("/{orgId}")
     public OrganizationResponse getOrganizationById(@PathVariable Long orgId) {
         return organizationService.getOrganizationById(orgId);
     }
