@@ -1,6 +1,7 @@
 package com.example.taskManagmentSystem.Dto.Response;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.taskManagmentSystem.Payload.TaskPriority;
 import com.example.taskManagmentSystem.Payload.TaskStatus;
@@ -17,9 +18,13 @@ public class TaskResponse {
     private TaskPriority priority;
     private LocalDateTime dueDate;
 
-    private Long employeeId;
+    private Long milestoneId;
+    private String milestoneName;
+    
     private Long projectId;
-    private String firstName;
     private String projectName;
+
+    private List<Long> employeeIds;
+    private List<String> employeeNames;
     
 }

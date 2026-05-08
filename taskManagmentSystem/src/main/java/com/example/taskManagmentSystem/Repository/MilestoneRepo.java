@@ -1,5 +1,7 @@
 package com.example.taskManagmentSystem.Repository;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,5 +23,7 @@ public interface MilestoneRepo extends JpaRepository<Milestone, Long> {
             m.project.projectId = :projectId
         )
     """)
-        Page<Milestone> searchAndFilter(String keyword, Long projectId, Pageable pageable);  
+        Page<Milestone> searchAndFilter(String keyword, Long projectId, Pageable pageable);
+
+    List<Milestone> findByProjectProjectId(Long projectId);  
 }

@@ -1,5 +1,6 @@
 package com.example.taskManagmentSystem.Security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,24 +14,38 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
-     @Bean
+    @Value("${swagger.title}")
+    private String title;
+
+    @Value("${swagger.version}")
+    private String version;
+
+    @Value("${swagger.description}")
+    private String description;
+
+    @Value("${swagger.contact.name}")
+    private String contactName;
+
+    @Value("${swagger.license.name}")
+    private String licenseName;
+
+    @Value("${swagger.security.scheme-name}")
+    private String securitySchemeName;
+
+    @Bean
     public OpenAPI customOpenAPI() {
 
-        final String securitySchemeName = "bearerAuth";
-
         return new OpenAPI()
-
                 .info(new Info()
-                        .title("Task Management System API")
-                        .version("1.0.0")
-                        .description("REST API documentation for Task Management System with JWT Authentication")
-                        .contact(new Contact()
-                                .name("Lakshmi Priya"))
-                        .license(new License()
-                                .name("Open Source License")))
+                        .title(title)
+                        .version(version)
+                        .description(description)
+                        .contact(new Contact().name(contactName))
+                        .license(new License().name(licenseName)))
 
-                .addSecurityItem(new SecurityRequirement()
-                        .addList(securitySchemeName))
+                .addSecurityItem(
+                        new SecurityRequirement()
+                                .addList(securitySchemeName))
 
                 .schemaRequirement(
                         securitySchemeName,

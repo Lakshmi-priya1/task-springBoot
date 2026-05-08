@@ -28,5 +28,6 @@ public class TaskRequest {
     
     private Long employeeId;
 
-    private Long projectId; 
+    @NotNull(message = "Milestone is required")
+private Long milestoneId;
 }

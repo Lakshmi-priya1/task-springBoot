@@ -1,12 +1,12 @@
 package com.example.taskManagmentSystem.Model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.taskManagmentSystem.Payload.EmployeeStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -39,9 +38,6 @@ public class Employee {
     private EmployeeStatus status;
     private String phoneNumber;
     private String password;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL,orphanRemoval = true)
-    private List<Task> tasks;
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;
@@ -49,4 +45,7 @@ public class Employee {
     @ManyToMany(mappedBy = "employees")
     private List<Project> projects;
 
+    @JsonIgnore
+    @ManyToMany(mappedBy = "employees")
+    private List<Task> tasks = new ArrayList<>();
 }

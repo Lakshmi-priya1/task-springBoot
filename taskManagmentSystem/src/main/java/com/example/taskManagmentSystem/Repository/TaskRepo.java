@@ -1,4 +1,6 @@
 package com.example.taskManagmentSystem.Repository;
+import java.util.List;
+
 import com.example.taskManagmentSystem.Model.Task;
 import com.example.taskManagmentSystem.Payload.TaskStatus;
 
@@ -9,6 +11,16 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 @Repository
 public interface TaskRepo extends JpaRepository<Task, Long> {
+
+    @Query("""
+    SELECT COUNT(t) > 0 FROM Task t
+    WHERE LOWER(t.title) = LOWER(:title)
+    AND t.milestone.project.projectId = :projectId
+    """)
+    boolean existsByTitleInProject(String title, Long projectId);
+
+    List<Task> findByMilestoneMilestoneId(Long milestoneId);
+
      @Query("""
     SELECT t FROM Task t
     WHERE (

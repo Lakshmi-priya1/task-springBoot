@@ -1,6 +1,7 @@
 package com.example.taskManagmentSystem.Dto.Request;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import com.example.taskManagmentSystem.Payload.ProjectStatus;
 
@@ -25,4 +26,5 @@ public class ProjectRequest {
     @Future(message = "End date must be in the future")
     @NotNull(message = "End date is required")
     private LocalDateTime endDate;
+    private List<Long> employeeIds;
 }

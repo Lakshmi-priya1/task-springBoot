@@ -9,15 +9,23 @@ import com.example.taskManagmentSystem.Dto.Response.ProjectResponse;
 import com.example.taskManagmentSystem.Payload.ProjectStatus;
 
 public interface ProjectService {
+     ProjectResponse createProject(ProjectRequest request);
     List<ProjectResponse> getAllProjects();
     ProjectResponse getProjectById(Long projectId);
-    
-    ProjectResponse createProject(ProjectRequest request);
     ProjectResponse updateProject(Long projectId, ProjectRequest request);
     void deleteProject(Long projectId);
+
+    // ✅ KEEP - employee assignment at project level
     void assignEmployeeToProject(Long projectId, Long employeeId);
     void removeEmployeeFromProject(Long projectId, Long employeeId);
-    void assignTaskToProject(Long projectId, Long taskId);
-    void removeTaskFromProject(Long projectId, Long taskId);
-    Page<ProjectResponse> searchAndFilterProjects(String keyword, ProjectStatus status, int page, int size, String sortBy, String direction); 
+
+
+    Page<ProjectResponse> searchAndFilterProjects(
+        String keyword,
+        ProjectStatus status,
+        int page,
+        int size,
+        String sortBy,
+        String direction
+    );
 }

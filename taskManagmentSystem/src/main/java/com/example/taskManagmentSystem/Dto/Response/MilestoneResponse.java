@@ -19,7 +19,9 @@ public class MilestoneResponse {
     private String projectName;
     private List<Long> taskIds;
     private List<String> taskTitles;
-    private List<TaskStatus> taskStauses;
+    private List<TaskStatus> taskStatuses;
+    private List<Long> employeeIds;
+    private List<String> employeeNames;
     
 
 }

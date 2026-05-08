@@ -39,46 +39,34 @@ public class ProjectController {
         return projectService.createProject(request);
     }
     @PostMapping("/{projectId}/employees/{employeeId}")
-public String assignEmployeeToProject(
-        @PathVariable Long projectId,
-        @PathVariable Long employeeId) {
-
-    projectService.assignEmployeeToProject(projectId, employeeId);
-    return "Employee assigned to project successfully";
-}
-    @PostMapping("/{projectId}/tasks/{taskId}")
-    public String assignTaskToProject(
+    public String assignEmployeeToProject(
             @PathVariable Long projectId,
-            @PathVariable Long taskId) {
+            @PathVariable Long employeeId) {
 
-        projectService.assignTaskToProject(projectId, taskId);
-        return "Task assigned to project successfully";
+        projectService.assignEmployeeToProject(projectId, employeeId);
+        return "Employee assigned to project successfully";
     }
+
     @PutMapping("/update/{projectId}")
     public ProjectResponse updateProject(@PathVariable Long projectId, @RequestBody ProjectRequest request) {
          return projectService.updateProject(projectId, request);
     }
+
     @DeleteMapping("/delete/{projectId}")
     public String deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
         return "Project deleted successfully";
     }
+
     @DeleteMapping("/{projectId}/employees/{employeeId}")
-public String removeEmployeeFromProject(
-        @PathVariable Long projectId,
-        @PathVariable Long employeeId) {
-
-    projectService.removeEmployeeFromProject(projectId, employeeId);
-    return "Employee removed from project";
-}
-    @DeleteMapping("/{projectId}/tasks/{taskId}")
-    public String removeTaskFromProject(
+    public String removeEmployeeFromProject(
             @PathVariable Long projectId,
-            @PathVariable Long taskId) {
+            @PathVariable Long employeeId) {
 
-        projectService.removeTaskFromProject(projectId, taskId);
-        return "Task removed from project";
+        projectService.removeEmployeeFromProject(projectId, employeeId);
+        return "Employee removed from project";
     }
+
 
     @GetMapping
     public Page<ProjectResponse> searchAndFilterProjects(
@@ -86,7 +74,7 @@ public String removeEmployeeFromProject(
             @RequestParam(required = false) ProjectStatus status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "projectId") String sortBy,
             @RequestParam(defaultValue = "asc") String direction
 
     ) {

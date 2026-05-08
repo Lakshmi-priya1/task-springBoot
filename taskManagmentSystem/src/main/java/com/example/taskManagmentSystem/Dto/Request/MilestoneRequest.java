@@ -21,8 +21,6 @@ public class MilestoneRequest {
     @Future(message = "Due date must be in the future") 
     @NotNull(message = "Due date is required")
     private LocalDateTime dueDate; 
+    @NotNull(message = "Project is required")
     private Long projectId;
-    
-    private String projectName;
-    
 }

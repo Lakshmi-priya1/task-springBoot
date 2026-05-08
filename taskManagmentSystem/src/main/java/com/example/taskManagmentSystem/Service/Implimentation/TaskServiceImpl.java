@@ -9,107 +9,192 @@ import org.springframework.stereotype.Service;
 
 import com.example.taskManagmentSystem.Dto.Request.TaskRequest;
 import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
+import com.example.taskManagmentSystem.Exception.ResourceNotFoundException;
 import com.example.taskManagmentSystem.Model.Employee;
+import com.example.taskManagmentSystem.Model.Milestone;
 import com.example.taskManagmentSystem.Model.Project;
 import com.example.taskManagmentSystem.Model.Task;
 import com.example.taskManagmentSystem.Payload.TaskStatus;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
-import com.example.taskManagmentSystem.Repository.ProjectRepo;
+import com.example.taskManagmentSystem.Repository.MilestoneRepo;
 import com.example.taskManagmentSystem.Repository.TaskRepo;
 import com.example.taskManagmentSystem.Service.TaskService;
 import com.example.taskManagmentSystem.Util.TaskMapper;
 @Service
 public class TaskServiceImpl implements TaskService {
-    private final TaskRepo taskRepo;
+     private final TaskRepo taskRepo;
     private final EmployeeRepo employeeRepo;
-    private final ProjectRepo projectRepo;
-    public TaskServiceImpl(TaskRepo taskRepo, EmployeeRepo employeeRepo, ProjectRepo projectRepo) {
+    private final MilestoneRepo milestoneRepo;
+
+    public TaskServiceImpl(TaskRepo taskRepo,
+                           EmployeeRepo employeeRepo,
+                           MilestoneRepo milestoneRepo) {
         this.taskRepo = taskRepo;
         this.employeeRepo = employeeRepo;
-        this.projectRepo = projectRepo;
+        this.milestoneRepo = milestoneRepo;
     }
+
     @Override
     public TaskResponse createTask(TaskRequest request) {
-    Task task = TaskMapper.mapToEntity(request);
-     if (request.getEmployeeId() != null) {
-        Employee employee = employeeRepo.findById(request.getEmployeeId())
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-        task.setEmployee(employee);
+        Milestone milestone = milestoneRepo.findById(request.getMilestoneId())
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone", "id", request.getMilestoneId()));
+
+        Long projectId = milestone.getProject().getProjectId();
+        if (taskRepo.existsByTitleInProject(request.getTitle(), projectId)) {
+            throw new RuntimeException(
+                "A task with title '" + request.getTitle() + "' already exists in this project."
+            );
+        }
+
+        Task task = TaskMapper.mapToEntity(request);
+        task.setMilestone(milestone);
+
+        // No employee assigned at creation — use the assign endpoint instead
+        return TaskMapper.mapToDTO(taskRepo.save(task));
     }
 
-    if (request.getProjectId() != null) {
-        Project project = projectRepo.findById(request.getProjectId())
-                .orElseThrow(() -> new RuntimeException("Project not found"));
+    // ─── READ ─────────────────────────────────────────────────────────────────
 
-        task.setProject(project);
-    }
-    Task savedTask = taskRepo.save(task);
-
-    return TaskMapper.mapToDTO(savedTask);
-
-}
-     @Override
+    @Override
     public List<TaskResponse> getAllTasks() {
-    return taskRepo.findAll()
-            .stream()
-            .map(TaskMapper::mapToDTO)
-            .toList();
-}
-     @Override
-    public TaskResponse getTaskById(Long id) {
-        return TaskMapper.mapToDTO(taskRepo.findById(id).orElse(null));
+        return taskRepo.findAll()
+                .stream()
+                .map(TaskMapper::mapToDTO)
+                .toList();
     }
-     @Override
+
+    @Override
+    public TaskResponse getTaskById(Long id) {
+        Task task = taskRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
+        return TaskMapper.mapToDTO(task);
+    }
+
+    // ─── UPDATE ───────────────────────────────────────────────────────────────
+
+    @Override
     public TaskResponse updateTask(Long id, TaskRequest request) {
 
-    Task task = taskRepo.findById(id).orElse(null);
+        Task task = taskRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
 
-    if (task != null) {
         task.setTitle(request.getTitle());
         task.setDescription(request.getDescription());
         task.setStatus(request.getStatus());
-
         task.setPriority(request.getPriority());
-
         task.setDueDate(request.getDueDate());
-        if (request.getEmployeeId() != null) {
-            Employee employee = employeeRepo.findById(request.getEmployeeId())
-                    .orElseThrow(() -> new RuntimeException("Employee not found"));
 
-            task.setEmployee(employee);
+        // Milestone is immutable after creation
+        if (request.getMilestoneId() != null &&
+            !request.getMilestoneId().equals(task.getMilestone().getMilestoneId())) {
+            throw new RuntimeException("Task milestone cannot be changed after creation.");
         }
-        if (request.getProjectId() != null) {
-            Project project = projectRepo.findById(request.getProjectId())
-                    .orElseThrow(() -> new RuntimeException("Project not found"));
 
-            task.setProject(project);
-        }
-        
+        // Employees are managed via assign/unassign endpoints — not updated here
         return TaskMapper.mapToDTO(taskRepo.save(task));
-    } 
-    return null;  
-}
-     @Override
+    }
+
+    // ─── DELETE ───────────────────────────────────────────────────────────────
+
+    @Override
     public void deleteTask(Long id) {
-        taskRepo.deleteById(id);    
-    }
-   @Override
-
-   public Page<TaskResponse> searchFilterTasks(String keyword,TaskStatus status,int page,int size,String sortBy,String direction) {
-    if (keyword != null && keyword.trim().isEmpty()) {
-        keyword = null;
+        if (!taskRepo.existsById(id)) {
+            throw new ResourceNotFoundException("Task", "id", id);
+        }
+        taskRepo.deleteById(id);
     }
 
-    Sort sort = direction.equalsIgnoreCase("desc")
-            ? Sort.by(sortBy).descending()
-            : Sort.by(sortBy).ascending();
+    // ─── GET TASKS BY MILESTONE ───────────────────────────────────────────────
 
-    PageRequest pageable = PageRequest.of(page, size, sort);
+    @Override
+    public List<TaskResponse> getTasksByMilestone(Long milestoneId) {
+        if (!milestoneRepo.existsById(milestoneId)) {
+            throw new ResourceNotFoundException("Milestone", "id", milestoneId);
+        }
+        return taskRepo.findByMilestoneMilestoneId(milestoneId)
+                .stream()
+                .map(TaskMapper::mapToDTO)
+                .toList();
+    }
 
-    Page<Task> taskPage = taskRepo.searchAndFilter(keyword, status, pageable);
+    // ─── ASSIGN EMPLOYEE TO TASK ──────────────────────────────────────────────
 
-    return taskPage.map(TaskMapper::mapToDTO);
-}
-    
+    @Override
+    public TaskResponse assignEmployeeToTask(Long taskId, Long employeeId) {
+
+        Task task = taskRepo.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
+
+        Employee employee = employeeRepo.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+        // Employee must belong to the task's project
+        Project project = task.getMilestone().getProject();
+        boolean isMember = project.getEmployees()
+                .stream()
+                .anyMatch(e -> e.getEmployeeId().equals(employee.getEmployeeId()));
+
+        if (!isMember) {
+            throw new RuntimeException(
+                "Employee " + employee.getFirstName() + " is not a member of project: " + project.getProjectName()
+            );
+        }
+
+        // Prevent duplicate assignment
+        boolean alreadyAssigned = task.getEmployees()
+                .stream()
+                .anyMatch(e -> e.getEmployeeId().equals(employeeId));
+
+        if (alreadyAssigned) {
+            throw new RuntimeException(
+                "Employee " + employee.getFirstName() + " is already assigned to this task."
+            );
+        }
+
+        task.getEmployees().add(employee);
+        return TaskMapper.mapToDTO(taskRepo.save(task));
+    }
+
+    // ─── UNASSIGN EMPLOYEE FROM TASK ─────────────────────────────────────────
+
+    @Override
+    public TaskResponse unassignEmployeeFromTask(Long taskId, Long employeeId) {
+
+        Task task = taskRepo.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", taskId));
+
+        Employee employee = employeeRepo.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+        boolean wasAssigned = task.getEmployees()
+                .removeIf(e -> e.getEmployeeId().equals(employeeId));
+
+        if (!wasAssigned) {
+            throw new RuntimeException(
+                "Employee " + employee.getFirstName() + " is not assigned to this task."
+            );
+        }
+
+        return TaskMapper.mapToDTO(taskRepo.save(task));
+    }
+
+    // ─── SEARCH & FILTER ──────────────────────────────────────────────────────
+
+    @Override
+    public Page<TaskResponse> searchFilterTasks(String keyword, TaskStatus status,
+                                                 int page, int size,
+                                                 String sortBy, String direction) {
+        if (keyword != null && keyword.trim().isEmpty()) {
+            keyword = null;
+        }
+
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        PageRequest pageable = PageRequest.of(page, size, sort);
+        return taskRepo.searchAndFilter(keyword, status, pageable)
+                       .map(TaskMapper::mapToDTO);
+    }
 }

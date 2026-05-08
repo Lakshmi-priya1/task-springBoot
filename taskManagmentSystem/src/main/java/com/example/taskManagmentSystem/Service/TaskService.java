@@ -10,14 +10,14 @@ import com.example.taskManagmentSystem.Payload.TaskStatus;
 
 public  interface  TaskService {
    TaskResponse createTask(TaskRequest request);
-
     List<TaskResponse> getAllTasks();
-
     TaskResponse getTaskById(Long id);
-
     TaskResponse updateTask(Long id, TaskRequest request);
-
     void deleteTask(Long id);
+
+    List<TaskResponse> getTasksByMilestone(Long milestoneId);
+    TaskResponse assignEmployeeToTask(Long taskId, Long employeeId);
+    TaskResponse unassignEmployeeFromTask(Long taskId, Long employeeId);
 
     Page<TaskResponse> searchFilterTasks(
         String keyword,
@@ -27,6 +27,4 @@ public  interface  TaskService {
         String sortBy,
         String direction
     );
-
-    
 }

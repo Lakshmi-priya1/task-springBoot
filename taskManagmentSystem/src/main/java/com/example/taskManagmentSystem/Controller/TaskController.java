@@ -31,6 +31,11 @@ public class TaskController {
         return taskService.getAllTasks();
     }
 
+    @GetMapping("/milestone/{milestoneId}")
+    public List<TaskResponse> getTasksByMilestone(@PathVariable Long milestoneId) {
+        return taskService.getTasksByMilestone(milestoneId);
+    }
+
     @GetMapping("/{id}")
     public TaskResponse getTaskById(@PathVariable Long id) {
         return taskService.getTaskById(id);
@@ -45,6 +50,21 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id) {
         taskService.deleteTask(id);
         return "Task deleted successfully";
+    }
+
+     @PutMapping("/{taskId}/assign/{employeeId}")
+    public TaskResponse assignEmployee(
+            @PathVariable Long taskId,
+            @PathVariable Long employeeId) {
+        return taskService.assignEmployeeToTask(taskId, employeeId);
+    }
+
+    // Unassign one specific employee from a task — employeeId now required
+    @DeleteMapping("/{taskId}/unassign/{employeeId}")
+    public TaskResponse unassignEmployee(
+            @PathVariable Long taskId,
+            @PathVariable Long employeeId) {
+        return taskService.unassignEmployeeFromTask(taskId, employeeId);
     }
 
     @GetMapping

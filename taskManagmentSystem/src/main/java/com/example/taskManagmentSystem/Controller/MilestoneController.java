@@ -28,6 +28,11 @@ public class MilestoneController {
     public List<MilestoneResponse> getAllMilestones() {
         return milestoneService.getAllMilestones();
     }
+
+    @GetMapping("/project/{projectId}")
+    public List<MilestoneResponse> getMilestonesByProject(@PathVariable Long projectId) {
+        return milestoneService.getMilestonesByProject(projectId);
+    }
     @GetMapping("/{id}")
     public MilestoneResponse getMilestoneById(@PathVariable Long id) {
         return milestoneService.getMilestoneById(id);
@@ -63,13 +68,27 @@ public class MilestoneController {
         return "Task removed from milestone successfully";
     }
 
+    @PutMapping("/{milestoneId}/assign/{employeeId}")
+public MilestoneResponse assignEmployee(
+        @PathVariable Long milestoneId,
+        @PathVariable Long employeeId) {
+    return milestoneService.assignEmployeeToMilestone(milestoneId, employeeId);
+}
+
+@DeleteMapping("/{milestoneId}/unassign/{employeeId}")
+public MilestoneResponse unassignEmployee(
+        @PathVariable Long milestoneId,
+        @PathVariable Long employeeId) {
+    return milestoneService.unassignEmployeeFromMilestone(milestoneId, employeeId);
+}
+
     @GetMapping
     public Page<MilestoneResponse> searchAndFilterMilestones(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) Long projectId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "milestoneId") String sortBy,
             
             @RequestParam(defaultValue = "asc") String direction
 
