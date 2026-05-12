@@ -51,8 +51,14 @@ public class TaskController {
         taskService.deleteTask(id);
         return "Task deleted successfully";
     }
+    @DeleteMapping("/soft-delete/{id}")
+    public String softDeleteTask(@PathVariable Long id) {
+        taskService.softDeleteTask(id);
+        return "Task soft-deleted successfully";
+    }
 
      @PutMapping("/{taskId}/assign/{employeeId}")
+     
     public TaskResponse assignEmployee(
             @PathVariable Long taskId,
             @PathVariable Long employeeId) {

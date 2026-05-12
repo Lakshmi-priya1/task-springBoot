@@ -57,8 +57,14 @@ public class ProjectController {
         projectService.deleteProject(projectId);
         return "Project deleted successfully";
     }
+    @DeleteMapping("/soft-delete/{projectId}")
+    public String softDeleteProject(@PathVariable Long projectId) {
+        projectService.softDeleteProject(projectId);
+        return "Project soft-deleted successfully";
+    }
 
     @DeleteMapping("/{projectId}/employees/{employeeId}")
+    
     public String removeEmployeeFromProject(
             @PathVariable Long projectId,
             @PathVariable Long employeeId) {

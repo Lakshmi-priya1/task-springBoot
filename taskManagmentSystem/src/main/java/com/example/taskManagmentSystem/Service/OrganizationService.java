@@ -11,4 +11,5 @@ public interface OrganizationService {
     List<OrganizationResponse> getAllOrganizations();
     OrganizationResponse updateOrganization(Long orgId, OrganizationRequest request);
     void deleteOrganization(Long orgId);
+    void softDeleteOrganization(Long orgId);
 }

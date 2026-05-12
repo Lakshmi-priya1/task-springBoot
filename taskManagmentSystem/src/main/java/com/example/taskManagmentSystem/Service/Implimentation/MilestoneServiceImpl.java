@@ -100,6 +100,15 @@ public class MilestoneServiceImpl implements MilestoneService {
         milestoneRepo.deleteById(milestoneId);
     }
 
+    @Override
+    public void softDeleteMilestone(Long milestoneId) {
+
+        Milestone milestone = milestoneRepo.findById(milestoneId)
+                .orElseThrow(() -> new ResourceNotFoundException("Milestone", "id", milestoneId));
+        milestone.setDeleted(true);
+        milestoneRepo.save(milestone);
+    }
+
     // ─── ASSIGN TASK TO MILESTONE ─────────────────────────────────────────────
 
     @Override

@@ -151,6 +151,17 @@ public void deleteProject(Long projectId) {
     projectRepo.deleteById(projectId);
 }
 
+@Override 
+public void softDeleteProject(Long projectId) {
+
+    Project project = projectRepo.findById(projectId)
+            .orElseThrow(() -> new ResourceNotFoundException("Project", "id", projectId));
+    project.setDeleted(true);
+    projectRepo.save(project);
+}
+
+
+
 // ================= ASSIGN EMPLOYEE =================
 
 @Override
@@ -161,7 +172,6 @@ Project project = projectRepo.findById(projectId)
 Employee employee = employeeRepo.findById(employeeId)
         .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
 
-// ✅ ALWAYS ensure list is initialized
 if (project.getEmployees() == null) {
     project.setEmployees(new ArrayList<>());
 }
@@ -248,8 +258,6 @@ public Page<ProjectResponse> searchAndFilterProjects(
     Page<Project> pageData = projectRepo.searchAndFilter(keyword, status, pageable);
 
     return pageData.map(project -> {
-
-        // 🔥 FORCE LOAD (THIS IS THE FIX)
         if (project.getEmployees() != null) {
             project.getEmployees().size();
         }

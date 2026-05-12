@@ -105,6 +105,16 @@ public class TaskServiceImpl implements TaskService {
         taskRepo.deleteById(id);
     }
 
+    @Override
+    
+    public void softDeleteTask(Long id) {
+
+        Task task = taskRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
+        task.setDeleted(true);
+        taskRepo.save(task);
+    }
+
     // ─── GET TASKS BY MILESTONE ───────────────────────────────────────────────
 
     @Override

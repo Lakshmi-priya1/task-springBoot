@@ -50,8 +50,14 @@ public class MilestoneController {
         milestoneService.deleteMilestone(id);
         return "Milestone deleted successfully";
     }
+    @DeleteMapping("/soft-delete/{id}")
+    public String softDeleteMilestone(@PathVariable Long id) {
+        milestoneService.softDeleteMilestone(id);
+        return "Milestone soft-deleted successfully";
+    }
 
     @PostMapping("/{milestoneId}/tasks/{taskId}")
+    
     public String assignTaskToMilestone(
             @PathVariable Long milestoneId,
             @PathVariable Long taskId) {
@@ -80,7 +86,7 @@ public MilestoneResponse unassignEmployee(
         @PathVariable Long milestoneId,
         @PathVariable Long employeeId) {
     return milestoneService.unassignEmployeeFromMilestone(milestoneId, employeeId);
-}
+        }
 
     @GetMapping
     public Page<MilestoneResponse> searchAndFilterMilestones(

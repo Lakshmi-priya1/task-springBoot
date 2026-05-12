@@ -13,6 +13,7 @@ public interface MilestoneService {
     MilestoneResponse getMilestoneById(Long milestoneId);
     MilestoneResponse updateMilestone(Long milestoneId, MilestoneRequest request);
     void deleteMilestone(Long milestoneId);
+    void softDeleteMilestone(Long milestoneId);
 
     // ✅ KEEP - task assignment at milestone level
     void assignTaskToMilestone(Long milestoneId, Long taskId);

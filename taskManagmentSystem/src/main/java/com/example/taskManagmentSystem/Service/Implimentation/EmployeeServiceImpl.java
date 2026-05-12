@@ -94,7 +94,14 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         employeeRepo.deleteById(employeeId);
     }
+    @Override
+    public void softDeleteEmployee(Long employeeId) {
 
+        Employee employee = employeeRepo.findById(employeeId)
+                .orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+        employee.setDeleted(true);
+        employeeRepo.save(employee);
+    }
     // ─── SEARCH & FILTER ──────────────────────────────────────────────────────
 
     @Override

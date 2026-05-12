@@ -14,8 +14,7 @@ public interface ProjectService {
     ProjectResponse getProjectById(Long projectId);
     ProjectResponse updateProject(Long projectId, ProjectRequest request);
     void deleteProject(Long projectId);
-
-    // ✅ KEEP - employee assignment at project level
+    void softDeleteProject(Long projectId);
     void assignEmployeeToProject(Long projectId, Long employeeId);
     void removeEmployeeFromProject(Long projectId, Long employeeId);
 

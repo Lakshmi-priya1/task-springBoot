@@ -58,5 +58,12 @@ public class OrgnizationServiceImpl implements OrganizationService {
     public void deleteOrganization(Long orgId) {
         organizationRepo.deleteById(orgId);
     }
-    
+
+    @Override
+    public void softDeleteOrganization(Long orgId) {
+        Organization org = organizationRepo.findById(orgId)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+        org.setDeleted(true);
+        organizationRepo.save(org);
+    }
 }

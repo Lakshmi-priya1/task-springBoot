@@ -52,6 +52,12 @@ public class EmployeeController {
         employeeService.deleteEmployee(employeeId);
         return "Employee deleted successfully";
     }  
+
+    @DeleteMapping("/soft-delete/{employeeId}")
+    public String softDeleteEmployee(@PathVariable Long employeeId) {
+        employeeService.softDeleteEmployee(employeeId);
+        return "Employee soft-deleted successfully";
+    }   
     @GetMapping
     public Page<EmployeeResponse> getEmployees(
             @RequestParam(required = false) String keyword,

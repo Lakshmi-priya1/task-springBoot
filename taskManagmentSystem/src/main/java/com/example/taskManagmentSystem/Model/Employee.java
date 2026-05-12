@@ -4,9 +4,12 @@ package com.example.taskManagmentSystem.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.SQLRestriction;
+
 import com.example.taskManagmentSystem.Payload.EmployeeStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,11 +23,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@SQLRestriction("deleted = false") 
 @Data
-
 @Entity
 @NoArgsConstructor
+
 @AllArgsConstructor
+
+
 public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,6 +44,8 @@ public class Employee {
     private EmployeeStatus status;
     private String phoneNumber;
     private String password;
+    @Column(nullable = false)
+    private boolean deleted = false;
     @ManyToOne
     @JoinColumn(name = "org_id")
     private Organization organization;

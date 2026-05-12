@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.taskManagmentSystem.Payload.MilestoneStatus;
+import org.hibernate.annotations.SQLRestriction;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,6 +26,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@SQLRestriction("deleted = false") 
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
@@ -38,6 +42,8 @@ public class Milestone {
     @Enumerated(EnumType.STRING)
     private MilestoneStatus status; 
     private LocalDateTime dueDate;
+    @Column(nullable = false)
+private boolean deleted = false;
 
     @ManyToOne
     @JoinColumn(name = "project_id")

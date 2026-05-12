@@ -18,5 +18,6 @@ public interface  EmployeeService {
     EmployeeResponse updateEmployee(Long employeeId, EmployeeRequest request);
 
     void deleteEmployee(Long employeeId);
+    void softDeleteEmployee(Long employeeId);
     Page<EmployeeResponse> searchFilterEmployees(String keyword, String department, int page, int size, String sortBy, String direction);
 }

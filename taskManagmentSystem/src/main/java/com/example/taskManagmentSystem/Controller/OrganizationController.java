@@ -44,4 +44,9 @@ public class OrganizationController {
         organizationService.deleteOrganization(orgId);
         return "Organization deleted successfully";
     }
+    @DeleteMapping("/soft-delete/{orgId}")
+    public String softDeleteOrganization(@PathVariable Long orgId) {
+        organizationService.softDeleteOrganization(orgId);
+        return "Organization soft-deleted successfully";
+    }
 }

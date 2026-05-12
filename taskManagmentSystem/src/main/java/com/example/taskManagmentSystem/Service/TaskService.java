@@ -14,6 +14,8 @@ public  interface  TaskService {
     TaskResponse getTaskById(Long id);
     TaskResponse updateTask(Long id, TaskRequest request);
     void deleteTask(Long id);
+    void softDeleteTask(Long id);
+    
 
     List<TaskResponse> getTasksByMilestone(Long milestoneId);
     TaskResponse assignEmployeeToTask(Long taskId, Long employeeId);

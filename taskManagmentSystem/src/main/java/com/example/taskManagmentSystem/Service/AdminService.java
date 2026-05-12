@@ -9,5 +9,6 @@ public interface AdminService {
         AdminResponse getAdminByEmail(String email);
         AdminResponse updateAdmin(String email, AdminRequest request);
         void deleteAdmin(String email);
+        
     
 }

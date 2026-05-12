@@ -1,6 +1,7 @@
 package com.example.taskManagmentSystem.Model;
 
-
+import org.hibernate.annotations.SQLRestriction;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +24,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+@SQLRestriction("deleted = false") 
  
 @Entity
 @Data
@@ -43,6 +46,8 @@ public class Task {
     @Enumerated(EnumType.STRING)
     private TaskPriority priority; // LOW, MEDIUM, HIGH
     private LocalDateTime dueDate;
+    @Column(nullable = false)
+private boolean deleted = false;
 
      @ManyToMany
     @JoinTable(
