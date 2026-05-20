@@ -1,0 +1,57 @@
+package com.example.taskManagmentSystem.Model;
+
+import java.time.LocalDateTime;
+ import java.util.List;
+
+import com.example.taskManagmentSystem.Payload.ProjectStatus;
+import org.hibernate.annotations.SQLRestriction;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@SQLRestriction("deleted = false") 
+@NoArgsConstructor
+@AllArgsConstructor
+@Data
+@Table(name = "projects")
+@Entity
+public class Project {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    
+    private Long projectId;
+    private String projectName;
+    private String description;
+    @Enumerated(EnumType.STRING)
+    private ProjectStatus status;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+         name = "project_employees",
+         joinColumns = @JoinColumn(name = "project_id"),
+         inverseJoinColumns = @JoinColumn(name = "employee_id")
+        )
+    private List<Employee> employees;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Milestone> milestones;
+    
+}
