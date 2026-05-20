@@ -7,6 +7,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
 
 import com.example.taskManagmentSystem.Payload.EmployeeStatus;
+import com.example.taskManagmentSystem.Payload.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -19,6 +20,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -44,6 +46,11 @@ public class Employee {
     private EmployeeStatus status;
     private String phoneNumber;
     private String password;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private User user;
     @Column(nullable = false)
     private boolean deleted = false;
     @ManyToOne

@@ -10,6 +10,8 @@ import com.example.taskManagmentSystem.Dto.Response.TaskResponse;
 import com.example.taskManagmentSystem.Payload.TaskStatus;
 import com.example.taskManagmentSystem.Service.TaskService;
 
+import jakarta.validation.Valid;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/tasks")
@@ -22,7 +24,7 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public TaskResponse addTask(@RequestBody TaskRequest request) {
+    public TaskResponse addTask(@Valid @RequestBody TaskRequest request) {
         return taskService.createTask(request);
     }
 
@@ -42,7 +44,7 @@ public class TaskController {
     }
 
     @PutMapping("/update/{id}")
-    public TaskResponse updateTask(@PathVariable Long id, @RequestBody TaskRequest request) {
+    public TaskResponse updateTask(@PathVariable Long id,@Valid  @RequestBody TaskRequest request) {
         return taskService.updateTask(id, request);
     }
 

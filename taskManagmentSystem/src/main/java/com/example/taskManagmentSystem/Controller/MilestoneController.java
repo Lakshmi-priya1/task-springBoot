@@ -17,6 +17,8 @@ import com.example.taskManagmentSystem.Dto.Request.MilestoneRequest;
 import com.example.taskManagmentSystem.Dto.Response.MilestoneResponse;
 import com.example.taskManagmentSystem.Service.MilestoneService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/milestones")
 public class MilestoneController {
@@ -38,11 +40,11 @@ public class MilestoneController {
         return milestoneService.getMilestoneById(id);
     }
     @PostMapping("/add")
-    public MilestoneResponse createMilestone(@RequestBody MilestoneRequest request) {
+    public MilestoneResponse createMilestone(@Valid @RequestBody MilestoneRequest request) {
         return milestoneService.createMilestone(request);
     }
     @PutMapping("/update/{id}")
-    public MilestoneResponse updateMilestone(@PathVariable Long id, @RequestBody MilestoneRequest request) {
+    public MilestoneResponse updateMilestone(@PathVariable Long id,@Valid @RequestBody MilestoneRequest request) {
         return milestoneService.updateMilestone(id, request);
     }
     @DeleteMapping("/delete/{id}")

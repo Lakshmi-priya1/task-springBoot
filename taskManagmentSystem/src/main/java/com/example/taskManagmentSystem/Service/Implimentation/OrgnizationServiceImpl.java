@@ -10,6 +10,10 @@ import com.example.taskManagmentSystem.Model.Organization;
 import com.example.taskManagmentSystem.Repository.OrganizationRepo;
 import com.example.taskManagmentSystem.Service.OrganizationService;
 import com.example.taskManagmentSystem.Util.OrganizationMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+
 
 @Service
 public class OrgnizationServiceImpl implements OrganizationService {
@@ -66,4 +70,16 @@ public class OrgnizationServiceImpl implements OrganizationService {
         org.setDeleted(true);
         organizationRepo.save(org);
     }
+
+    
+@Override
+public Page<OrganizationResponse> searchAndFilterOrganizations(String keyword, int page, int size) {
+    if (keyword != null && keyword.trim().isEmpty()) {  
+        keyword = null;
+    }
+
+    Pageable pageable = PageRequest.of(page, size);
+    Page<Organization> orgPage = organizationRepo.searchAndFilter(keyword, pageable);
+    return orgPage.map(OrganizationMapper::mapToDto);
+}
 }

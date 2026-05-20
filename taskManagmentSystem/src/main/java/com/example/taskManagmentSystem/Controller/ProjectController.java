@@ -18,6 +18,8 @@ import com.example.taskManagmentSystem.Dto.Response.ProjectResponse;
 import com.example.taskManagmentSystem.Payload.ProjectStatus;
 import com.example.taskManagmentSystem.Service.ProjectService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/projects")
 public class ProjectController {
@@ -35,7 +37,7 @@ public class ProjectController {
         return projectService.getProjectById(projectId);
     } 
     @PostMapping("/add")
-    public ProjectResponse addProject(@RequestBody ProjectRequest request) {
+    public ProjectResponse addProject(@Valid @RequestBody ProjectRequest request) {
         return projectService.createProject(request);
     }
     @PostMapping("/{projectId}/employees/{employeeId}")
@@ -48,7 +50,7 @@ public class ProjectController {
     }
 
     @PutMapping("/update/{projectId}")
-    public ProjectResponse updateProject(@PathVariable Long projectId, @RequestBody ProjectRequest request) {
+    public ProjectResponse updateProject(@PathVariable Long projectId,@Valid  @RequestBody ProjectRequest request) {
          return projectService.updateProject(projectId, request);
     }
 

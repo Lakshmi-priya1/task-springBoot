@@ -14,6 +14,9 @@ import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.data.domain.Page;
+
 
 @RestController
 @RequestMapping("/organizations")
@@ -49,4 +52,12 @@ public class OrganizationController {
         organizationService.softDeleteOrganization(orgId);
         return "Organization soft-deleted successfully";
     }
+    @GetMapping
+    public Page <OrganizationResponse> searchAndFilterOrganizations(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return organizationService.searchAndFilterOrganizations(keyword, page, size);
+    }
+
 }

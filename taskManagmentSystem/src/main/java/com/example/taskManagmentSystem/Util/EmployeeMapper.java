@@ -12,17 +12,24 @@ public final  class EmployeeMapper {
         employee.setFirstName(dto.getFirstName());
         employee.setLastName(dto.getLastName());
         employee.setDepartment(dto.getDepartment());
-
         employee.setStatus(dto.getStatus());
         employee.setPhoneNumber(dto.getPhoneNumber());
         employee.setPassword(dto.getPassword());
+        employee.setRole(dto.getRole());
         return employee;
     }
 
     public static EmployeeResponse mapToDTO(Employee employee) {
         EmployeeResponse dto = new EmployeeResponse();
-        dto.setEmployeeId(employee.getEmployeeId());
 
+        String prefix = switch (employee.getRole()) {
+            case ADMIN           -> "ADM";
+            case PROJECT_MANAGER -> "PM";
+            case TEAM_LEAD       -> "TL";
+            case EMPLOYEE        -> "EMP";
+        };
+        dto.setEmployeeCode(prefix + String.format("%03d", employee.getEmployeeId()));
+        dto.setEmployeeId(employee.getEmployeeId());
         dto.setUsername(employee.getUsername());
         dto.setFirstName(employee.getFirstName());
         dto.setLastName(employee.getLastName());
@@ -30,8 +37,10 @@ public final  class EmployeeMapper {
         dto.setDepartment(employee.getDepartment());
         dto.setStatus(employee.getStatus()); 
         dto.setPhoneNumber(employee.getPhoneNumber());
-        dto.setPassword(employee.getPassword());
+        dto.setRole(employee.getRole());
+        dto.setUserId(employee.getUser() != null ? employee.getUser().getUserId() : null);
         dto.setOrgId(employee.getOrganization() != null ? employee.getOrganization().getOrgId() : null);
+        dto.setCompanyName(employee.getOrganization() != null ? employee.getOrganization().getCompanyName() : null);
         return dto;
     }
     

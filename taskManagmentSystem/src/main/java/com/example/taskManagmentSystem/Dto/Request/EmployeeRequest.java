@@ -1,6 +1,7 @@
 package com.example.taskManagmentSystem.Dto.Request;
 
 import com.example.taskManagmentSystem.Payload.EmployeeStatus;
+import com.example.taskManagmentSystem.Payload.Role;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,7 +31,10 @@ public class EmployeeRequest {
     private String phoneNumber;
     @NotBlank(message = "Password is required")
     @Size(min = 5, message = "Password must be at least 5 characters")
-    private String password; 
+    private String password;
+    @NotNull(message = "Role is required")
+    private Role role;
     private Long orgId;
+    private String companyName;
     
 }

@@ -8,11 +8,15 @@ import org.springframework.stereotype.Service;
 
 import com.example.taskManagmentSystem.Dto.Request.EmployeeRequest;
 import com.example.taskManagmentSystem.Dto.Response.EmployeeResponse;
+import com.example.taskManagmentSystem.Exception.BadRequestException;
 import com.example.taskManagmentSystem.Exception.ResourceNotFoundException;
 import com.example.taskManagmentSystem.Model.Employee;
 import com.example.taskManagmentSystem.Model.Organization;
+import com.example.taskManagmentSystem.Model.User;
+import com.example.taskManagmentSystem.Payload.Role;
 import com.example.taskManagmentSystem.Repository.EmployeeRepo;
 import com.example.taskManagmentSystem.Repository.OrganizationRepo;
+import com.example.taskManagmentSystem.Repository.UserRepo;
 import com.example.taskManagmentSystem.Service.EmployeeService;
 import com.example.taskManagmentSystem.Util.EmployeeMapper;
 
@@ -20,18 +24,35 @@ import com.example.taskManagmentSystem.Util.EmployeeMapper;
 public class EmployeeServiceImpl implements EmployeeService {
      private final EmployeeRepo employeeRepo;
     private final OrganizationRepo organizationRepo;
+    private final UserRepo userRepo;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    public EmployeeServiceImpl(EmployeeRepo employeeRepo, OrganizationRepo organizationRepo) {
+    public EmployeeServiceImpl(EmployeeRepo employeeRepo, OrganizationRepo organizationRepo,
+                               UserRepo userRepo,
+                               org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.employeeRepo = employeeRepo;
         this.organizationRepo = organizationRepo;
+        this.userRepo = userRepo;
+        this.passwordEncoder = passwordEncoder;
     }
 
     // ─── CREATE ───────────────────────────────────────────────────────────────
 
     @Override
     public EmployeeResponse createEmployee(EmployeeRequest request) {
+        if (request.getRole() == Role.ADMIN) {
+            throw new BadRequestException("Cannot create an employee with ADMIN role");
+        }
+
+        User user = new User();
+        user.setName(request.getFirstName() + " " + request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+        User savedUser = userRepo.save(user);
 
         Employee employee = EmployeeMapper.mapToEntity(request);
+        employee.setUser(savedUser);
 
         if (request.getOrgId() != null) {
             Organization org = organizationRepo.findById(request.getOrgId())
@@ -122,5 +143,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         PageRequest pageable = PageRequest.of(page, size, sort);
         return employeeRepo.searchAndFilter(keyword, department, pageable)
                            .map(EmployeeMapper::mapToDTO);
+    }
+
+    // ─── BULK CREATE ──────────────────────────────────────────────────────────
+
+    @Override
+    public List<EmployeeResponse> bulkCreateEmployees(List<EmployeeRequest> requests) {
+        List<Employee> employees = requests.stream().map(req -> {
+            Employee employee = EmployeeMapper.mapToEntity(req);
+            if (req.getOrgId() != null) {
+                Organization org = organizationRepo.findById(req.getOrgId())
+                        .orElseThrow(() -> new ResourceNotFoundException("Organization", "id", req.getOrgId()));
+                employee.setOrganization(org);
+            }
+            return employee;
+        }).toList();
+        return employeeRepo.saveAll(employees).stream()
+                .map(EmployeeMapper::mapToDTO)
+                .toList();
     }
 }

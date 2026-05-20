@@ -20,4 +20,5 @@ public interface  EmployeeService {
     void deleteEmployee(Long employeeId);
     void softDeleteEmployee(Long employeeId);
     Page<EmployeeResponse> searchFilterEmployees(String keyword, String department, int page, int size, String sortBy, String direction);
+    List<EmployeeResponse> bulkCreateEmployees(List<EmployeeRequest> requests);
 }

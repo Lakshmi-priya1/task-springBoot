@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
     }
  
-    // ── 400 Bad Request (business logic) ─────────────────────────────────────────
+    // ── 400 Bad Request 
  
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequest(
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
  
-    // ── 400 Validation errors (@Valid on @RequestBody) ────────────────────────────
+    // ── 400 Validation errors 
  
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(
@@ -64,7 +64,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
  
-    // ── 400 Enum / type mismatch in @RequestParam ─────────────────────────────────
+    // ── 400 Enum / type mismatch 
  
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ErrorResponse> handleTypeMismatch(
@@ -83,7 +83,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
  
-    // ── 500 Catch-all ─────────────────────────────────────────────────────────────
+    // ── 500 Catch-all 
  
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(
